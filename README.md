@@ -1,8 +1,8 @@
-###Introduction
+<h3>Introduction</h3>
 Whole document is based on this talk by Scott Wlaschin:
 https://www.youtube.com/watch?v=E8I19uA-wGY&t=1002s
 
-###What are types?
+<h3>What are types?</h3>
 Types are not classes. A function has a bunch of inputs and a bunch of outputs. A type is just a name given to a set of inputs or outputs for a function.
 This can be primitive types, domain types or function types. Types don't have any behavior. So the behavior and the data are completely separated. 
 Because types don't have behavior they can be composed, just like functions. Most functional languages have an 'algebraic types system', here you start with 
@@ -16,7 +16,7 @@ primitives and you create new types by glowing them together. There are basicall
    you can combine this together and get the: `type PaymentMethod = Cash | Cheque of ChequeNumber| Card of CardType * CardNumber`  
 TODO: BJORN DO THIS IN SCALA
 
-###Design principle: Strive for totality
+<h3>Design principle: Strive for totality</h3>
 Types fit in this principle. Totality means that for every input in a function there is a valid output. Example: 
 
 ```scala
@@ -31,8 +31,8 @@ This function says that it takes an Int and returns an Int. However, that types 
 1. Constrain the inputs (do not except 0)
 2. Constrain the output (return an Either or Option to handle failure -> types signature tells the truth) 
 
-### Functions as parameters
-######Guideline: Parameterize all the things. Try not to implement hard coded constants in your code instead give the values as a parameter. 
+<h3>Functions as parameters</h3>
+<h6>Guideline: Parameterize all the things. Try not to implement hard coded constants in your code instead give the values as a parameter.</h6>
 
 Example: 
 
@@ -70,9 +70,9 @@ printRange(1 to 10, multiplyByTwoAction())
 ```
 We have decoupled the behavior from the data. Any range, any print action!
 
-### Pattern: Partial Application
-######Bad news: Composition patterns only work for functions that have on parameter!
-######Good news: Every function is a one parameter function
+<h3>Pattern: Partial Application</h3>
+<h6>Bad news: Composition patterns only work for functions that have on parameter!</h6>
+<h6>Good news: Every function is a one parameter function</h6>
 
 Example:
 
@@ -106,7 +106,7 @@ In a true functional language, every multi argument function is actually a funct
 generates other functions all the way down until you pass the last argument in. 
 This can be used by applying partial functions. 
 
-### Pattern: Use partial application to do dependency injection
+<h3>Pattern: Use partial application to do dependency injection</h3>
 Example:
 
 ```scala
@@ -138,7 +138,7 @@ getCustomerById(1)// res1: Option[Customer] = Some(Customer(Piet,20,1))
 getCustomerById(3)// res2: Option[Customer] = Some(Customer(John,40,3))
 ```
 
-### Pattern: The Hollywood principle (continuations) 
+<h3>Pattern: The Hollywood principle (continuations)</h3>
 Continuations is just a fancy word about whats happens next. So this means that you
 should have complete control over your functions (i.e., think about possible errors and handle them). 
 In addition, as mentioned before, we also want to decouple the behavior from the data (i.e., passing in the continuations). 
@@ -183,7 +183,7 @@ val goodDivideOpt = divideOpt(2, 1)
 val badDivideOpt = divideOpt(2, 0)
 ``` 
 
-### Monads
+<h3>Monads</h3>
 In short, Monads are really just chaining continuations together (it is more complex than this, but for now this is enough).
 Above we created a function based on continuations. Meaning that in case, of failure we return a Left and in case of success
 we return a Right. So we created a function where something goes in and the outcome depends on if returns a success (Right) 
@@ -240,11 +240,11 @@ to live in that world as long as you can, and maybe you have to go down in the v
 In Scala, we have a Map function and this function helps us to stay in the world of Options. In addition, we have flatMap to chain functions
 that live in the world of Options. Please note that we use the Option wrapper just as an example,  we could use other wrapper types like Future,
 Either and Lists etcetera.
-######Guideline: Most wrapped generic types have a 'map'. Use it!
-######A Functor is just a fancy word for a type that has a map (i.e., functor is a mappable type).
+<h6>Guideline: Most wrapped generic types have a 'map'. Use it!</h6>
+<h6>A Functor is just a fancy word for a type that has a map (i.e., functor is a mappable type).</h6>
 
 
-###Monoids
+<h3>Monoids</h3>
 The generalization:
 
 - You start with a bunch of things, and some way of combining them two at a time. 
@@ -273,7 +273,7 @@ with "zero" you get the original thing back.
     * <b>Benefit:</b> Initial value for empty or missing data. For instance, if you want to apply a reduce or foldLeft method
     on a List you need to start with something. If zero is missing it is called a Semigroup (but we do not go into details about this).
 
-###Simplifying aggregation code with Monoids
+<h3>Simplifying aggregation code with Monoids</h3>
 
 ```scala
 case class OrderLine(quantity: Int, costs: Double)
@@ -304,7 +304,7 @@ def pairWizeCombinator(line1: OrderLine, line2: OrderLine): OrderLine = {
 orderLines.reduce(pairWizeCombinator)
 ```
      
-###Pattern: Convert non Monoid to Monoid
+<h3>Pattern: Convert non Monoid to Monoid</h3>
 For instance you cannot add Customers together because a Customer is not a Monoid. However, you can create a Monoid
 called Customer Stats, where everything inside the Customer Stats is a numeric field.  So you can map each Customer to a
 Customer Stats. Once you have done that you can reduce them to a total Customer Stats. So there is a map followed by reduce. 
@@ -312,11 +312,11 @@ This is a very simplified version of the familiar: MAP/REDUCE PATTERN.
 The same approach you can apply for going to a very complex Monoid to a Monoid that is more efficient to work with. This is called
 Monoid homomorphism. 
 
-###Pattern seeing monoids everywhere
-######Metrics guideline: Use counters rather than rates
-######Alternative Metric guideline: Make sure your metrics are Monoids (because they aggregate, they handle incremental stuff and missing data)
+<h3>Pattern seeing monoids everywhere</h3>
+<h6>Metrics guideline: Use counters rather than rates</h6>
+<h6>Alternative Metric guideline: Make sure your metrics are Monoids (because they aggregate, they handle incremental stuff and missing data)</h6>
 
-###Is function composition a monoid
+<h3>Is function composition a monoid</h3>
 The example below uses two function and we are going to glue them together to create a new function. The problem is that the new function
 is not the same type as the original function. So this is not a Monoid! It does not satisfy the Closure rule!
 
@@ -328,7 +328,7 @@ function that takes apples to apples. Functions like this are monoids!
 ![alt text](resources/monoid.png?raw=true "Monoid")
 
 So functions where the input type and the output type are the same type are monoids. This is called: Endomorphisms. 
-######All Endomorphisms are Monoids.
+<h6>All Endomorphisms are Monoids.</h6>
 
 An example of Endomorphisms:
 
@@ -349,7 +349,7 @@ A more practical example is used in EVENT SOURCING, see the illustrative explana
 ![alt text](resources/eventsourcing2.png?raw=true "")
 
 
-###Monads vs Monoids
+<h3>Monads vs Monoids</h3>
 The monad laws are just the monoid definitions in diguise. They have <b>Closure, Associativity and Identity</b>.
 
     
