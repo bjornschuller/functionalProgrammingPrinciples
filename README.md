@@ -14,7 +14,6 @@ primitives and you create new types by glowing them together. There are basicall
 2. Sum types/union types/choise types, example:
  `Set of cash values + Set of cheque values + Set of Creditcard values`
    you can combine this together and get the: `type PaymentMethod = Cash | Cheque of ChequeNumber| Card of CardType * CardNumber`  
-TODO: BJORN DO THIS IN SCALA
 
 <h3>Design principle: Strive for totality</h3>
 Types fit in this principle. Totality means that for every input in a function there is a valid output. Example: 
